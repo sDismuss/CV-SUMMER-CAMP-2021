@@ -94,6 +94,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+practice/openvino-virtual-environments/
 
 # Spyder project settings
 .spyderproject
@@ -112,3 +113,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# JPG files
+*.jpg
+
+# My files
+*/CV-SC.txt

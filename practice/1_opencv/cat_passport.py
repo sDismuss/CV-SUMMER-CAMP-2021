@@ -1,27 +1,49 @@
+from email.mime import image
+import re
+import sys
 import argparse
-import cv2
+import cv2 as cv
 
 
 def make_cat_passport_image(input_image_path, haar_model_path):
 
     # Read image
+    image = cv.imread(input_image_path)
 
     # Convert image to grayscale
+    gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
     # Normalize image intensity
+    norm_image = cv.equalizeHist(gray_image)
 
     # Resize image
+    resized_image = cv.resize(norm_image, (640, 480), interpolation = cv.INTER_AREA)
+    image = cv.resize(image, (640, 480), interpolation = cv.INTER_AREA)
 
     # Detect cat faces using Haar Cascade
+    detector = cv.CascadeClassifier(haar_model_path)
+    rects = detector.detectMultiScale(resized_image, scaleFactor=1.1, minNeighbors=5, minSize=(75, 75))
+    #print(rects)
 
     # Draw bounding box
+    for (i, (x, y, w, h)) in enumerate(rects): 
+        cv.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2) 
+        cv.putText(image, "Cat #{}".format(i + 1), (x, y - 10), 
+                   cv.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
 
     # Display result image
+    # cv.imshow("window_name", image) 
+    # cv.waitKey(0) 
+    # cv.destroyAllWindows()
 
     # Crop image
+    x, y, w, h = rects[0] 
+    image = image[y:y+h, x:x+w]
 
     # Save result image to file
+    cv.imwrite('out.jpg', image)
 
+    print("Finished successfully!")
     return
 
 
